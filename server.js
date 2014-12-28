@@ -20,17 +20,18 @@ app.put('/sheetSync', function(req, res){
 
 
 	var jsonString = JSON.stringify(req.body);
-
+	var keyOut ="";
 	for(var key in req.body)
 	{
+		keyOut = key;
 		console.log( "key = " + key);
 	}
 
 //var key = req.body.keys();
 
 
-	console.log("body = " + jsonString);
-	res.json(req.body);
+	//console.log("body = " + jsonString);
+	res.send("key = " + keyOut);
 });
 
 app.listen(app.get('port'));
