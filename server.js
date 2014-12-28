@@ -10,6 +10,12 @@ app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.get('/', function(req, res){
+
+res.send('Get is working');
+
+});
+
 app.put('/sheetSync', function(req, res){
 
 
@@ -25,7 +31,7 @@ app.put('/sheetSync', function(req, res){
 
 	console.log("body = " + jsonString);
 	res.json(req.body);
-})
+});
 
 app.listen(app.get('port'));
 console.log("listening on port : " + app.get('port'));
