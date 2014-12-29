@@ -67,6 +67,36 @@ CollectionDriver.prototype.update = function(collectionName, obj, entityId, call
     });
 }
 
+
+//update a specific object
+CollectionDriver.prototype.upsert = function(collectionName, obj, uniqueIdName, callback) {
+    this.getCollection(collectionName, function(error, the_collection) {
+        if (error) callback(error)
+        else {
+
+        	console.log("uniqueIdName = " + uniqueIdName);
+        	console.log("obj[uniqueIdName] = " + obj[uniqueIdName]);
+
+
+        	the_collection.update({uniqueIdName: obj[uniqueIdName]},
+        						obj,
+        						{upsert:true,safe:false},
+        						function(error,doc) { 
+            	if (error) callback(error)
+            	else callback(null, obj);
+            });
+	       // obj._id = ObjectID(entityId); 
+	       // obj.updated_at = new Date(); 
+           // the_collection.save(obj, function(error,doc) { 
+           // 	if (error) callback(error)
+           // 	else callback(null, obj);
+           // });
+        }
+    });
+}
+
+
+
 //delete a specific object
 CollectionDriver.prototype.delete = function(collectionName, entityId, callback) {
     this.getCollection(collectionName, function(error, the_collection) { 
