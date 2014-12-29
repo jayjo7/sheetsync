@@ -66,6 +66,7 @@ app.put('/sheetSync', function(req, res)
           		else 
           			{ 
           				console.log("upsert Success");
+          				console.log("docs: " + docs);
           			} 
      		});
 		}

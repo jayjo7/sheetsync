@@ -69,28 +69,38 @@ CollectionDriver.prototype.update = function(collectionName, obj, entityId, call
 
 
 //update a specific object
-CollectionDriver.prototype.upsert = function(collectionName, obj, uniqueIdName, callback) {
-    this.getCollection(collectionName, function(error, the_collection) {
-        if (error) callback(error)
-        else {
+CollectionDriver.prototype.upsert = function(collectionName, obj, uniqueIdName, callback) 
+{
+    this.getCollection(collectionName, function(error, the_collection) 
+    {
+        if (error) 
+        {	
+        	callback(error)
+        }
+        else 
+        {
 
-        	console.log("uniqueIdName = " + uniqueIdName);
-        	console.log("obj[uniqueIdName] = " + obj[uniqueIdName]);
+        	console.log("obj[" + uniqueIdName +"] = " + obj[uniqueIdName]);
+        	var uniqueIdNameLowerCase = uniqueIdName.toLowerCase();
+        	console.log('uniqueIdNameLowerCase = ' + uniqueIdNameLowerCase);
+        	the_collection.update(
+        							{uniqueIdNameLowerCase: obj[uniqueIdName]},
+        							obj,
+        							{upsert:true},
+        							function(error,doc) 
+        								{ 
+            								if (error) 
+            								{
+            									console.log("Error  in upsert")
+            									callback(error)
+            								}
+            								else 
+            								{
+            									console.log("Upsert Sucessfull, here is the doc:" + obj);
+            									callback(null, obj);
+            								}
+            							});
 
-
-        	the_collection.update({uniqueIdName: obj[uniqueIdName]},
-        						obj,
-        						{upsert:true,safe:false},
-        						function(error,doc) { 
-            	if (error) callback(error)
-            	else callback(null, obj);
-            });
-	       // obj._id = ObjectID(entityId); 
-	       // obj.updated_at = new Date(); 
-           // the_collection.save(obj, function(error,doc) { 
-           // 	if (error) callback(error)
-           // 	else callback(null, obj);
-           // });
         }
     });
 }
