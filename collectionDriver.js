@@ -81,10 +81,8 @@ CollectionDriver.prototype.upsert = function(collectionName, obj, uniqueIdName, 
         {
 
         	console.log("obj[" + uniqueIdName +"] = " + obj[uniqueIdName]);
-        	var uniqueIdNameLowerCase = uniqueIdName.toLowerCase();
-        	console.log('uniqueIdNameLowerCase = ' + uniqueIdNameLowerCase);
         	the_collection.update(
-        							{uniqueIdNameLowerCase: obj[uniqueIdName]},
+        							{uniqueIdName: obj[uniqueIdName]},
         							obj,
         							{upsert:true},
         							function(error,doc) 
