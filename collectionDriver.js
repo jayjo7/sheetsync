@@ -81,7 +81,37 @@ CollectionDriver.prototype.upsert = function(collectionName, obj, uniqueIdName, 
         {
 
         	console.log("obj[" + uniqueIdName +"] = " + obj[uniqueIdName]);
-        	the_collection.update(
+
+        	var queryObject = {};
+        	queryObject[uniqueIdName]= obj[uniqueIdName];
+
+
+        	the_collection.findAndModify(
+        							queryObject,
+        							{},
+        							obj,
+        							{new:true, upsert:true},
+        							function(error,doc) 
+        								{ 
+            								if (error) 
+            								{
+            									console.log("Error  in upsert")
+            									callback(error)
+            								}
+            								else 
+            								{
+            									//console.log("Upsert Sucessfull, here is the doc:" + doc);
+            									callback(null, obj);
+            								}
+            							}	
+
+
+        	);
+
+
+
+
+/**        	the_collection.update(
         							{uniqueIdName: obj[uniqueIdName]},
         							obj,
         							{upsert:true},
@@ -98,6 +128,7 @@ CollectionDriver.prototype.upsert = function(collectionName, obj, uniqueIdName, 
             									callback(null, obj);
             								}
             							});
+**/
 
         }
     });

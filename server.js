@@ -1,6 +1,6 @@
 var express = require('express'),
     MongoClient = require('mongodb').MongoClient,
-    Server = require('mongodb').Server,
+   // Server = require('mongodb').Server,
     CollectionDriver = require('./collectionDriver').CollectionDriver;
     bodyParser = require('body-parser')
 
@@ -62,12 +62,7 @@ app.put('/sheetSync', function(req, res)
           				result = false;
           				failure.push(data[i][app.get('sheet_uniqueid_column_name')]);
 
-          			} 
-          		else 
-          			{ 
-          				console.log("upsert Success");
-          				console.log("docs: " + docs);
-          			} 
+          			}  
      		});
 		}
 
@@ -79,6 +74,11 @@ app.put('/sheetSync', function(req, res)
 
 		res.send(resultObject);	
 	}
+	else
+	{
+		res.send(failure);
+	}
+
 	
 });
 
