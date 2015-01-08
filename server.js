@@ -8,7 +8,7 @@ var app = express();
 var collectionDriver;
 app.set('port', process.env.PORT || 3000);
 app.set('mongodb_url', process.MONGO_URL || "mongodb://fifthdonut:fifthdonut123@kahana.mongohq.com:10051/Websheets");
-app.set('sheet_uniqueid_column_name', process.SHEET_UNIQUEID_COLUMN_NAME || "WebId");
+app.set('sheet_uniqueid_column_name', process.SHEET_UNIQUEID_COLUMN_NAME || "UniqueId");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
