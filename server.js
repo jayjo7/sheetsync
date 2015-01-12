@@ -95,6 +95,10 @@ app.put('/sheetSync/full', function(req,res)
 
 		collectionDriver.findAll(key, function(err,results)
 		{
+			console.log( "Working with the worksheet = " + key);
+
+		    var data= req.body[key];
+
 			if(err)
 			{
 				console.log("Trouble reteriving the data from mongodb")
@@ -104,10 +108,6 @@ app.put('/sheetSync/full', function(req,res)
 			{
 				dataFromDb = results;
 				console.log("Size of array received from db : " + dataFromDb.length);
-
-				console.log( "Working with the worksheet = " + key);
-
-		    	var data= req.body[key];
 
 		    	console.log( "Number of records received = " + data.length);
 
@@ -143,7 +143,7 @@ app.put('/sheetSync/full', function(req,res)
 		    		{
 		    			console.log ("Trouble deleting the record with _id : " + dataFromDb[keyFromDB]._id);
 
-						fullSyncResult.push(dataFromDb[keyFromDB]._id)	;    		
+						failure.push(dataFromDb[keyFromDB]._id)	;    		
 					}
 		    		else
 		    		{
@@ -154,13 +154,34 @@ app.put('/sheetSync/full', function(req,res)
 
 		    }	
 
-		    if(fullSyncResult.lenght > 0)
+
+			for (i=0; i<data.length; i++)
+			{
+
+		   			collectionDriver.upsert(key, data[i], app.get('sheet_uniqueid_column_name') ,function(err,docs) 
+		   			{
+          				if (err) 
+          				{ 
+          					console.log(err); 
+          					result = false;
+          					failure.push(data[i][app.get('sheet_uniqueid_column_name')]);
+
+          				}  
+     			});
+			}
+
+
+	
+
+		    if(failure.lenght > 0)
 		    {
-		    		res.send("Trouble deleting - Full Sync Failed");
+		    	res.send(failure);
 		    }
 		    else
 		    {
-		    	res.send("Full Sync Success");
+		    	var resultObject ={"result": "Full Sync Success"};
+
+		        res.send(resultObject);	
 		    }
 
 
