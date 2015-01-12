@@ -82,5 +82,93 @@ app.put('/sheetSync', function(req, res)
 	
 });
 
+app.put('/sheetSync/full', function(req,res)
+{
+
+	var result = true;
+	var failure=[];
+
+	var dataFromDb 
+
+	for(var key in req.body)
+	{
+
+		collectionDriver.findAll(key, function(err,results)
+		{
+			if(err)
+			{
+				console.log("Trouble reteriving the data from mongodb")
+
+			}
+			else
+			{
+				dataFromDb = results;
+				console.log("Size of array received from db : " + dataFromDb.length);
+
+				console.log( "Working with the worksheet = " + key);
+
+		    	var data= req.body[key];
+
+		    	console.log( "Number of records received = " + data.length);
+
+		    	for(var i=0; i<data.length; i++)
+		    	{
+		    		console.log ( "data[i].UniqueId = " + data[i].UniqueId);
+
+		    		for(var keyFromDB in dataFromDb)
+		    		{
+		    			console.log("Data From DB Key = " + keyFromDB);
+		    			console.log("UniqueId = " + dataFromDb[keyFromDB].UniqueId);
+		  		    	console.log("_id= " + dataFromDb[keyFromDB]._id);
+  		
+
+		    			if(data[i].UniqueId === dataFromDb[keyFromDB].UniqueId)
+		    			{
+		    				dataFromDb.splice(keyFromDB, 1);
+		    				break;
+		    			}
+		    		}
+		    	}
+		    }
+
+		    console.log("Size of array received from db after check : " + dataFromDb.length);
+
+		    var fullSyncResult=[];
+
+			for(var keyFromDB in dataFromDb)
+		    {	  
+		    	collectionDriver.delete(key, dataFromDb[keyFromDB]._id, function(err, results)
+		    	{
+		    		if(err)
+		    		{
+		    			console.log ("Trouble deleting the record with _id : " + dataFromDb[keyFromDB]._id);
+
+						fullSyncResult.push(dataFromDb[keyFromDB]._id)	;    		
+					}
+		    		else
+		    		{
+		    			
+		    		}
+		    	});
+
+
+		    }	
+
+		    if(fullSyncResult.lenght > 0)
+		    {
+		    		res.send("Trouble deleting - Full Sync Failed");
+		    }
+		    else
+		    {
+		    	res.send("Full Sync Success");
+		    }
+
+
+		});
+	
+	}
+});
+
+
 app.listen(app.get('port'));
 console.log("listening on port : " + app.get('port'));
